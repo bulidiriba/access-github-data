@@ -1,6 +1,8 @@
 import requests
 import argparse
 import sys
+import shlex
+import subprocess
 
 class Access():
 	def __init__(self):
@@ -47,24 +49,33 @@ class Access():
 		else:
 			Print("Problem occured during adding to file")
 
-	def access_issues(self, args):
-		"""To access the issues of the given repositories"""
-		r = requests.get(self.github+"repos/"+args.org+"/"+args.repo+"/issues")
-		self.save_to_file(r.text)
+
+	def access_event(self, args):
+		"""To access any event type with request"""
+		r = requests.get(self.github+"repos/"+args.org+"/"+args.repo+"/"+args.event_type)
+		print(r.headers)
+		print(type(str(r.headers)))
+		#self.save_to_file(str(r.headers))
 		
 
-	def access_commits(self):
-		"""To access commits of the given repositories"""
-		pass
+	def access_event2(self, args):
+		"""To access any event type with curl"""
+		cmd = "curl -I https://api.github.com/repos/"+args.org+"/"+args.repo+"/"+args.event_type
+		a = shlex.split(cmd)
+		process = subprocess.Popen(a, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		print(str(stdout))
+		#print(type(str(stdout)))
+		#self.save_to_file(str(stdout))
 
 	def main(self):
 		args = self.get_arguments()
 		valid = self.validate_arguments(args)
 
 		if args.event_type == 'issues':
-			self.access_issues(args)
+			self.access_event(args)
 		if args.event_type == 'commits':
-			self.access_commits(args)
+			self.access_event2(args)
 		else:
 			sys.exit(0)
 
