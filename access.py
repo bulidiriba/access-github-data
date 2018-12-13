@@ -71,14 +71,9 @@ class Access():
 	def main(self):
 		args = self.get_arguments()
 		valid = self.validate_arguments(args)
-
-		if args.event_type == 'issues':
-			self.access_event(args)
-		if args.event_type == 'commits':
-			self.access_event2(args)
-		else:
-			sys.exit(0)
-
+		
+		#self.access_event(args)
+		self.access_event2(args)
 
 """Initialize the class"""
 access = Access()
